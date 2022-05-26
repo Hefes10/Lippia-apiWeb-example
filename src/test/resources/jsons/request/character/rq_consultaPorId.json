@@ -1,0 +1,7 @@
+{
+  "url": "{{base.url}}",
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "endpoint": "/character/{{id}}"
+}

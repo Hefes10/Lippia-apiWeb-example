@@ -1,0 +1,35 @@
+version: "3.3"
+services:
+    zalenium:
+        image: "dosel/zalenium"
+        container_name: selenium-grid
+        hostname: zalenium
+        tty: true
+        volumes:
+            - /tmp/videos:/home/seluser/videos
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /usr/bin/docker:/usr/bin/docker
+        ports:
+            - 4444:4444
+        environment:
+            - TZ=America/Argentina/Buenos_Aires
+        command: > 
+            start --desiredContainers 2
+                  --maxDockerSeleniumContainers 4
+                  --timeZone "America/Argentina/Buenos_Aires"        
+            
+    ## report server containers      
+    rs_mongo: 
+        image: mongo:3.4-xenial
+        ports: 
+            - 27017:27017
+
+    rs_report-server:
+        image: crowdar/report-server-front:1.1
+        privileged: true
+        depends_on:
+            - rs_mongo
+        ports: 
+            - 8085:80
+        environment:
+            - DB_HOST= rs_mongo

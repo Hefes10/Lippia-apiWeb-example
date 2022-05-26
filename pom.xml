@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.lippia</groupId>
+		<artifactId>root</artifactId>
+		<version>3.2.3.8</version>
+	</parent>
+
+	<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+	<!--           HONNI SOIT QUI MAL Y PENSE            -->
+	<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+
+	<groupId>com.example</groupId>
+	<artifactId>automation-bff-interface</artifactId>
+	<version>1.0</version>
+	<name>crowdar_automation</name>
+
+	<packaging>jar</packaging>
+
+	<properties>
+		<maven.build.timestamp.format>yyyyMMdd_HHmmss</maven.build.timestamp.format>
+		<runner>testngSecuencial.xml</runner>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		
+		<!-- defult configuration chrome local -->
+		<crowdar.projectType></crowdar.projectType>
+		<crowdar.driver.capabilities.json_path></crowdar.driver.capabilities.json_path>
+		<crowdar.setupStrategy></crowdar.setupStrategy>
+		<crowdar.driverHub></crowdar.driverHub>
+
+		<!--klov Properties -->
+		<crowdar.klov.projectName>wikipedia-zaleniumDemoTest</crowdar.klov.projectName>
+
+		<!-- zalenium Properties -->
+		<buildIdentifier>default-${maven.build.timestamp}</buildIdentifier>
+
+		<!-- cucumber options -->
+		<cucumber.stepsDefinitions>--glue / </cucumber.stepsDefinitions>
+		<cucumber.hooks>--glue com/crowdar/bdd/cukes</cucumber.hooks>
+		<cucumber.tags>@Success</cucumber.tags>
+		<cucumber.reporters>--plugin pretty --plugin com.example.report.CucumberReporter:</cucumber.reporters>
+		<crowdar.cucumber.option>src/test/resources/ ${cucumber.hooks} ${cucumber.stepsDefinitions} --glue com/crowdar --tags 'not @Ignore' ${cucumber.tags} ${cucumber.reporters}</crowdar.cucumber.option>
+
+		<!-- client project custom properties -->
+
+	</properties>
+
+	<profiles>
+	
+		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+		<!--    Profiles related to Browser requirementes    -->
+		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+		
+		<profile>
+			<id>chrome</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<crowdar.projectType>WEB_CHROME</crowdar.projectType>
+				<crowdar.setupStrategy>web.DownloadLatestStrategy</crowdar.setupStrategy>
+				<crowdar.driver.capabilities.json_path>src/main/resources/browsers/chromeCapabilities.json</crowdar.driver.capabilities.json_path>
+			</properties>
+		</profile>
+
+		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+		<!--   Profiles related to Driver Instance petition   -->
+		<!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -->
+
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<crowdar.projectType>API</crowdar.projectType>
+				<crowdar.projectType>WEB_CHROME</crowdar.projectType>
+				<base-url>https://rickandmortyapi.com/api</base-url>
+				<web-url>https://hefes10.github.io/100tifico/</web-url>
+				<crowdar.setupStrategy>web.DownloadLatestStrategy</crowdar.setupStrategy>
+				<crowdar.driver.capabilities.json_path>src/main/resources/browsers/chromeCapabilities.json</crowdar.driver.capabilities.json_path>
+			</properties>
+		</profile>
+		<profile>
+			<id>zalenium-klov</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<crowdar.setupStrategy>web.SeleniumGridStrategy</crowdar.setupStrategy>
+				<!-- you can set your zalenium url -->
+				<crowdar.driverHub>http://localhost:4444/wd/hub</crowdar.driverHub>
+			</properties>
+		</profile>
+		<profile>
+			<id>Paralelo</id>
+			<activation>
+			</activation>
+			<properties>
+				<apiExample.runner>testngParalell.xml</apiExample.runner>
+			</properties>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.lippia</groupId>
+			<artifactId>core</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.lippia.report</groupId>
+			<artifactId>cucumber4-adapter</artifactId>
+			<version>1.7.3</version>
+		</dependency>
+		<dependency>
+			<groupId>io.lippia.report</groupId>
+			<artifactId>extentreports-cucumber4-adapter</artifactId>
+			<version>1.1.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>persistence-api</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<filters>
+			<filter>src/main/resources/cucumber.properties</filter>
+		</filters>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M4</version>
+				<configuration>
+					<systemPropertyVariables>
+						<klov.project.name>${crowdar.klov.projectName}</klov.project.name>
+						<klov.report.name>${buildIdentifier}</klov.report.name>
+						<extent.device>${crowdar.projectType}</extent.device>
+						
+						<!-- needed by zaleniumKlovCucumberAdapter -->
+						<zalenium.hub>${crowdar.driverHub}</zalenium.hub>
+					
+						<build.identifier>${buildIdentifier}</build.identifier>
+						
+					</systemPropertyVariables>
+					<suiteXmlFiles>
+						<suiteXmlFile>${runner}</suiteXmlFile>
+					</suiteXmlFiles>
+					<testFailureIgnore>true</testFailureIgnore>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>crowdarRepo</id>
+			<name>crowdar-repository</name>
+			<url>https://nexus-v3-repositories.automation.crowdaronline.com/repository/maven-public/</url>
+		</repository>
+	</repositories>
+</project>
