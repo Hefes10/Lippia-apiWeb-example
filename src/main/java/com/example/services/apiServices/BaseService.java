@@ -14,14 +14,15 @@ import java.util.Map;
 
 public class BaseService extends CustomMethodService {
 
-    public static Boolean SCREENSHOT_DISABLE = true;
-    public static final ThreadLocal<String> ID = new ThreadLocal<>();
+    //public static Boolean SCREENSHOT_DISABLE = new ThreadLocal<Boolean>();
+    public static final ThreadLocal<Boolean> SCREENSHOT_DISABLE = new ThreadLocal<>();
+
 
     public static <T> Response get(String jsonRequest, Map<String, String> params, Class<T> classModel) {
         Request request = getRequest(jsonRequest, setParams(params));
         request.getHeaders().put("Accept-Charset", "utf-8");
         showRequest(request);
-        Response resp = get(request, classModel);
+        Response resp = get(request, classModel, getCustomRestClient());
         String entity = classModel.getName().substring(classModel.getName().lastIndexOf(".") + 1);
         showResponse(entity);
         return resp;
@@ -39,7 +40,6 @@ public class BaseService extends CustomMethodService {
 
     private static Map<String, String> setParams(Map<String, String> params) {
         params.put("base.url", PropertyManager.getProperty("base.url"));
-        params.put("id", ID.get());
         return params;
     }
 
@@ -75,14 +75,14 @@ public class BaseService extends CustomMethodService {
     }
 
     public static Boolean getScreenshotDisable() {
-        return SCREENSHOT_DISABLE;
+        return SCREENSHOT_DISABLE.get();
     }
 
     public static void setScreenshotDisable(Boolean screenshotDisable) {
-        SCREENSHOT_DISABLE = screenshotDisable;
+        SCREENSHOT_DISABLE.set(screenshotDisable);
     }
 
-    public static void callService(String methodName, String entity, String jsonName) {
+    public void callService(String methodName, String entity, String jsonName) {
         try {
             Class<?> entityService = EntityConfiguration.valueOf(entity).getEntityService();
             String jsonPath = "request/".concat(jsonName);

@@ -1,7 +1,5 @@
 package com.example.model.apiModel;
 
-import com.example.model.apiModel.error.GenericErrorResponse;
-
 import java.util.ArrayList;
 
 public class CharacterResponse {
@@ -21,7 +19,7 @@ public class CharacterResponse {
 
     // Getter Methods
 
-    public float getId() {
+    public int getId() {
         return id;
     }
 

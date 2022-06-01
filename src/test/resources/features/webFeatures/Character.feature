@@ -7,11 +7,27 @@ Feature: Web - Character por nombre
   @Smoke
   Scenario Outline: Consulta de character por nombre - Resultado exitoso
     Given que me encuentro en la pantalla de home
-    When hago click en en el personaje '<personaje>'
-    Then aparece la informacion del personaje '<personaje>'
+    When hago click en en el personaje <personaje>
+    Then aparece la informacion del personaje <personaje>
     Examples:
-      | personaje      |
-      | 'Rick Sanchez' |
-      | 'Morty Smith'  |
-
-
+      | personaje                   |
+      | "Rick Sanchez"              |
+      | "Morty Smith"               |
+      | "Summer Smith"              |
+      | "Beth Smith"                |
+      | "Jerry Smith"               |
+      | "Abadango Cluster Princess" |
+      | "Abradolf Lincler"          |
+      | "Adjudicator Rick"          |
+      | "Agency Director"           |
+      | "Alan Rails"                |
+      | "Albert Einstein"           |
+      | "Alexander"                 |
+      | "Alien Googah"              |
+      | "Alien Morty"               |
+      | "Alien Rick"                |
+      | "Amish Cyborg"              |
+      | "Annie"                     |
+      | "Antenna Morty"             |
+      | "Antenna Rick"              |
+      | 'Ants in my Eyes Johnson'   |

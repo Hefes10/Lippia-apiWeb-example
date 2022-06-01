@@ -145,12 +145,12 @@ public class CommonValidator extends BaseValidator {
     }
 
     public static void validateBoton(String boton, boolean isEnabled, String name) {
-        softAssert.assertTrue(WebActionManager.isPresent(boton), "El boton " + name + " no está presente.");
-        softAssert.assertTrue(WebActionManager.isVisible(boton), "El boton " + name + " no es visible.");
+        SOFTASSERT.get().assertTrue(WebActionManager.isPresent(boton), "El boton " + name + " no está presente.");
+        SOFTASSERT.get().assertTrue(WebActionManager.isVisible(boton), "El boton " + name + " no es visible.");
         if (isEnabled) {
-            softAssert.assertTrue(WebActionManager.isEnabled(boton), "El boton " + name + " no está habilitado.");
+            SOFTASSERT.get().assertTrue(WebActionManager.isEnabled(boton), "El boton " + name + " no está habilitado.");
         } else {
-            softAssert.assertTrue(!WebActionManager.isEnabled(boton), "El boton " + name + " no debe estar habilitado.");
+            SOFTASSERT.get().assertTrue(!WebActionManager.isEnabled(boton), "El boton " + name + " no debe estar habilitado.");
         }
         strEsperado = name;
         strEncontrado = WebActionManager.getText(boton);
@@ -159,24 +159,24 @@ public class CommonValidator extends BaseValidator {
 
     public static void validateData(String locator, String type) {
         WebActionManager.waitPresence(locator);
-        softAssert.assertTrue(WebActionManager.isPresent(locator), "El locator " + locator + " no esta presente.");
-        softAssert.assertTrue(WebActionManager.isVisible(locator), "El locator " + locator + " no es visible.");
+        SOFTASSERT.get().assertTrue(WebActionManager.isPresent(locator), "El locator " + locator + " no esta presente.");
+        SOFTASSERT.get().assertTrue(WebActionManager.isVisible(locator), "El locator " + locator + " no es visible.");
         String text = WebActionManager.getText(locator);
-        softAssert.assertNotEquals(text, "", "El texto del locator " + locator + " no debe ser vacio.");
+        SOFTASSERT.get().assertNotEquals(text, "", "El texto del locator " + locator + " no debe ser vacio.");
         type = type.toLowerCase();
 
         switch (type) {
             case "string":
-                softAssert.assertFalse(CommonValidator.isNumeric(text), "El locator " + locator + " no es tipo String.");
+                SOFTASSERT.get().assertFalse(CommonValidator.isNumeric(text), "El locator " + locator + " no es tipo String.");
                 break;
             case "numeric":
-                softAssert.assertTrue(CommonValidator.isNumeric(text), "El locator " + locator + " no es tipo numerico.");
+                SOFTASSERT.get().assertTrue(CommonValidator.isNumeric(text), "El locator " + locator + " no es tipo numerico.");
                 break;
             case "date":
-                softAssert.assertTrue(CommonValidator.fechaFormatoDMY(text), "El locator " + locator + " no es de tipo date.");
+                SOFTASSERT.get().assertTrue(CommonValidator.fechaFormatoDMY(text), "El locator " + locator + " no es de tipo date.");
                 break;
             default:
-                softAssert.fail("Tipo no soportado");
+                SOFTASSERT.get().fail("Tipo no soportado");
         }
     }
 }

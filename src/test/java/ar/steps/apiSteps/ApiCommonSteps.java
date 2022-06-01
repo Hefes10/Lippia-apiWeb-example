@@ -18,7 +18,8 @@ public class ApiCommonSteps extends PageSteps {
 
     @When("realizo una peticion '(.*)' al endpoint de la entidad '(.*)' con el jsonName '(.*)'")
     public void doRequest(String methodName, String entity, String jsonName) {
-        BaseService.callService(methodName, entity, jsonName);
+        BaseService baseService = new BaseService();
+        baseService.callService(methodName, entity, jsonName);
     }
 
     @And("deshabilito la opcion de screenshot")
