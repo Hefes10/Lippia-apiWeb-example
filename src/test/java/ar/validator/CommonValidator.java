@@ -1,11 +1,14 @@
 package ar.validator;
 
+import com.example.model.apiModel.error.GenericErrorResponse;
 import org.apache.commons.validator.routines.UrlValidator;
 import com.crowdar.core.actions.WebActionManager;
+import com.crowdar.api.rest.APIManager;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.io.IOException;
+import org.testng.Assert;
 import java.util.List;
 import java.net.URL;
 
@@ -178,5 +181,10 @@ public class CommonValidator extends BaseValidator {
             default:
                 SOFTASSERT.get().fail("Tipo no soportado");
         }
+    }
+
+    public static void validateErrorMessage(String message) {
+        GenericErrorResponse errorResponse = (GenericErrorResponse) APIManager.getLastResponse().getResponse();
+        Assert.assertEquals(errorResponse.getError(), message);
     }
 }

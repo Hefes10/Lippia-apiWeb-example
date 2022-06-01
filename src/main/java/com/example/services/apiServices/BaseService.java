@@ -10,12 +10,13 @@ import com.crowdar.api.rest.APIManager;
 import com.crowdar.api.rest.Response;
 import com.crowdar.api.rest.Request;
 import com.crowdar.core.JsonUtils;
+import java.util.HashMap;
 import java.util.Map;
 
 public class BaseService extends CustomMethodService {
 
-    //public static Boolean SCREENSHOT_DISABLE = new ThreadLocal<Boolean>();
     public static final ThreadLocal<Boolean> SCREENSHOT_DISABLE = new ThreadLocal<>();
+    public static final ThreadLocal<String> ID = new ThreadLocal<>();
 
 
     public static <T> Response get(String jsonRequest, Map<String, String> params, Class<T> classModel) {
@@ -40,6 +41,12 @@ public class BaseService extends CustomMethodService {
 
     private static Map<String, String> setParams(Map<String, String> params) {
         params.put("base.url", PropertyManager.getProperty("base.url"));
+        return params;
+    }
+
+    static Map<String, String> setParams() {
+        Map<String, String> params = new HashMap<>();
+        if (ID.get() != null) params.put("id", ID.get());
         return params;
     }
 

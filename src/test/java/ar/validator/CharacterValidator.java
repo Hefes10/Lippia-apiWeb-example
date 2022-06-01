@@ -1,8 +1,8 @@
 package ar.validator;
 
-import com.crowdar.api.rest.APIManager;
 import com.example.model.apiModel.CharacterResponse;
 import com.example.report.CucumberReporter;
+import com.crowdar.api.rest.APIManager;
 
 public class CharacterValidator extends BaseValidator {
 
