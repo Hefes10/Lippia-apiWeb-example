@@ -1,6 +1,8 @@
 package ar.steps.webSteps;
 
+import ar.validator.BaseValidator;
 import com.crowdar.core.actions.WebActionManager;
+import com.example.constants.CharacterConstants;
 import com.example.constants.HomeConstants;
 import ar.validator.CharacterWebValidator;
 import com.crowdar.core.PageSteps;
@@ -11,6 +13,8 @@ public class CharacterSteps extends PageSteps {
 
     @When("hago click en en el personaje (.*)")
     public void hagoClickEnEnElPersonajePersonaje(String nombre) {
+        BaseValidator baseValidator = new BaseValidator();
+        baseValidator.isVisible(HomeConstants.NOMBRE_PERSONAJE.replace("$nombre", nombre));
         WebActionManager.click(HomeConstants.NOMBRE_PERSONAJE.replace("$nombre", nombre));
     }
 
