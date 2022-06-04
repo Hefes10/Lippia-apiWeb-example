@@ -1,10 +1,11 @@
 package ar.validator;
 
-import com.example.model.apiModel.CharacterResponse;
+import com.example.model.apiModel.character.CharacterResponse;
 import com.example.report.CucumberReporter;
 import com.crowdar.api.rest.APIManager;
 
 public class CharacterValidator extends BaseValidator {
+    CommonValidator commonValidator = new CommonValidator();
 
     public void validate(String id) {
         setSoftAssert(new SoftAssert());
@@ -30,6 +31,6 @@ public class CharacterValidator extends BaseValidator {
         strEncontrado = String.valueOf(response.getId());
         checkAndReport("El id " + id + " del character");
 
-        getSoftAssert().assertTrue(CommonValidator.fechaFormatoYMDTHMS(response.getCreated()));
+        getSoftAssert().assertTrue(commonValidator.fechaFormatoYMDTHMS(response.getCreated()));
     }
 }

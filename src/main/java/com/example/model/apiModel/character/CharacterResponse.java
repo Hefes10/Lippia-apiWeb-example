@@ -1,4 +1,4 @@
-package com.example.model.apiModel;
+package com.example.model.apiModel.character;
 
 import java.util.ArrayList;
 
@@ -9,15 +9,15 @@ public class CharacterResponse {
     private String species;
     private String type;
     private String gender;
-    Origin OriginObject;
-    Location LocationObject;
+    private Origin OriginObject;
+    private Location LocationObject;
     private String image;
-    ArrayList<Object> episode = new ArrayList<>();
+    private ArrayList<Object> episode = new ArrayList<>();
     private String url;
     private String created;
 
 
-    // Getter Methods
+// Getter Methods
 
     public int getId() {
         return id;
@@ -53,6 +53,10 @@ public class CharacterResponse {
 
     public String getImage() {
         return image;
+    }
+
+    public ArrayList<Object> getEpisode() {
+        return episode;
     }
 
     public String getUrl() {
@@ -101,63 +105,15 @@ public class CharacterResponse {
         this.image = image;
     }
 
+    public void setEpisode(ArrayList<Object> episode) {
+        this.episode = episode;
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
 
     public void setCreated(String created) {
         this.created = created;
-    }
-}
-
-class Location {
-    private String name;
-    private String url;
-
-
-    // Getter Methods
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    // Setter Methods
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-}
-
-class Origin {
-    private String name;
-    private String url;
-
-
-    // Getter Methods
-
-    public String getName() {
-        return name;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    // Setter Methods
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
     }
 }

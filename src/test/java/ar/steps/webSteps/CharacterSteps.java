@@ -1,8 +1,8 @@
 package ar.steps.webSteps;
 
 import com.crowdar.core.actions.WebActionManager;
-import com.crowdar.driver.DriverManager;
 import com.example.constants.HomeConstants;
+import ar.validator.CharacterWebValidator;
 import com.crowdar.core.PageSteps;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -14,11 +14,9 @@ public class CharacterSteps extends PageSteps {
         WebActionManager.click(HomeConstants.NOMBRE_PERSONAJE.replace("$nombre", nombre));
     }
 
-    @Then("aparece la informacion del personaje (.*)")
-    public void apareceLaInformacionDelPersonajePersonaje(String nombre) {
-        WebActionManager.waitPresence(HomeConstants.NOMBRE_PERSONAJE.replace("$nombre", nombre));
-        WebActionManager.waitVisibility(HomeConstants.NOMBRE_PERSONAJE.replace("$nombre", nombre));
-        WebActionManager.isVisible(HomeConstants.NOMBRE_PERSONAJE.replace("$nombre", nombre));
-        DriverManager.getDriverInstance().close();
+    @Then("aparece la informacion del personaje (.*) (.*)")
+    public void apareceLaInformacionDelPersonajePersonaje(String nombre, String id) {
+        CharacterWebValidator characterWebValidator = new CharacterWebValidator();
+        characterWebValidator.validate(nombre, id);
     }
 }

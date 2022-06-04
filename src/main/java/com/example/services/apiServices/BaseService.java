@@ -18,7 +18,6 @@ public class BaseService extends CustomMethodService {
     public static final ThreadLocal<Boolean> SCREENSHOT_DISABLE = new ThreadLocal<>();
     public static final ThreadLocal<String> ID = new ThreadLocal<>();
 
-
     public static <T> Response get(String jsonRequest, Map<String, String> params, Class<T> classModel) {
         Request request = getRequest(jsonRequest, setParams(params));
         request.getHeaders().put("Accept-Charset", "utf-8");
@@ -89,7 +88,7 @@ public class BaseService extends CustomMethodService {
         SCREENSHOT_DISABLE.set(screenshotDisable);
     }
 
-    public void callService(String methodName, String entity, String jsonName) {
+    public static void callService(String methodName, String entity, String jsonName) {
         try {
             Class<?> entityService = EntityConfiguration.valueOf(entity).getEntityService();
             String jsonPath = "request/".concat(jsonName);
