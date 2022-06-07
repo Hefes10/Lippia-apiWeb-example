@@ -43,12 +43,6 @@ public class BaseService extends CustomMethodService {
         return params;
     }
 
-    static Map<String, String> setParams() {
-        Map<String, String> params = new HashMap<>();
-        if (ID.get() != null) params.put("id", ID.get());
-        return params;
-    }
-
     private static void showRequest(Request request) {
         CucumberReporter.addTestStepLog("<---------------------------------------- REQUEST ---------------------------------------->");
         String strRequest =
