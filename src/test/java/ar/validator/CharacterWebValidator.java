@@ -9,7 +9,7 @@ import com.crowdar.driver.DriverManager;
 import com.crowdar.api.rest.APIManager;
 
 public class CharacterWebValidator extends BaseValidator {
-    private CharacterResponse characterResponse;
+    public static final ThreadLocal<CharacterResponse> characterResponse = new ThreadLocal<>();
 
     public void validate(String nombre, String id) {
         softAssert = new SoftAssert();
@@ -18,7 +18,7 @@ public class CharacterWebValidator extends BaseValidator {
 
         CucumberReporter.addTestStepLog("****************************** VALIDACIONES ******************************");
 
-        validateResponse(characterResponse, nombre);
+        validateResponse(characterResponse.get(), nombre);
 
         CucumberReporter.addTestStepLog("**************************** FIN VALIDACIONES ****************************");
 
@@ -32,7 +32,7 @@ public class CharacterWebValidator extends BaseValidator {
     private void CallService(String id) {
         CharacterService.ID.set(id);
         CharacterService.callService("GET", "CHARACTER", "character/rq_consultaPorId");
-        characterResponse = (CharacterResponse) APIManager.getLastResponse().getResponse();
+        characterResponse.set((CharacterResponse) APIManager.getLastResponse().getResponse());
     }
 
     private void validateResponse(CharacterResponse response, String nombre) {
