@@ -11,21 +11,12 @@ public class BaseValidator {
     public double douEsperado, douEncontrado;
     public boolean boolEsperado, boolEncontrado;
 
-    public ThreadLocal<SoftAssert> SOFTASSERT = new ThreadLocal<>();
-
-    public SoftAssert getSoftAssert() {
-        return SOFTASSERT.get();
-    }
-
-    public void setSoftAssert(SoftAssert softAssert) {
-        SOFTASSERT.set(softAssert);
-    }
-
+    protected static SoftAssert softAssert = new SoftAssert();
 
     public void analyzeNotNull(Object obj) {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
-            SOFTASSERT.get().assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+            softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
         });
 
         String var = obj.getClass().getTypeName().replace(".", "/");
@@ -36,7 +27,7 @@ public class BaseValidator {
     public void analyzeNotNullWhitoutMsg(Object obj) {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
-            SOFTASSERT.get().assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+            softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
         });
     }
 
@@ -44,7 +35,7 @@ public class BaseValidator {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (!except.contains(field.getName())) {
-                SOFTASSERT.get().assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
             }
         });
 
@@ -57,7 +48,7 @@ public class BaseValidator {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (!except.contains(field.getName())) {
-                SOFTASSERT.get().assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
             }
         });
     }
@@ -66,7 +57,7 @@ public class BaseValidator {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                SOFTASSERT.get().assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
             }
         });
 
@@ -79,7 +70,7 @@ public class BaseValidator {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                SOFTASSERT.get().assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
             }
         });
     }
@@ -87,7 +78,7 @@ public class BaseValidator {
     public void analyzeNotVoid(Object obj) {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
-            SOFTASSERT.get().assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+            softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
         });
 
         String var = obj.getClass().getTypeName().replace(".", "/");
@@ -98,7 +89,7 @@ public class BaseValidator {
     public void analyzeNotVoidWhitoutMsg(Object obj) {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
-            SOFTASSERT.get().assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+            softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
         });
     }
 
@@ -106,7 +97,7 @@ public class BaseValidator {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (!except.contains(field.getName())) {
-                SOFTASSERT.get().assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
             }
         });
 
@@ -119,7 +110,7 @@ public class BaseValidator {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                SOFTASSERT.get().assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
             }
         });
 
@@ -132,25 +123,25 @@ public class BaseValidator {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                SOFTASSERT.get().assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
             }
         });
     }
 
     public void check(String msg){
         msg = Utilities.formatDescription(msg);
-        SOFTASSERT.get().assertEquals(strEncontrado, strEsperado, msg + " no es correcto.");
-        SOFTASSERT.get().assertEquals(douEncontrado, douEsperado, msg + " no es correcto.");
-        SOFTASSERT.get().assertEquals(boolEncontrado, boolEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(strEncontrado, strEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(douEncontrado, douEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(boolEncontrado, boolEsperado, msg + " no es correcto.");
 
         clearAuxVar();
     }
 
     public void checkAndReport(String msg){
         msg = Utilities.formatDescription(msg);
-        SOFTASSERT.get().assertEquals(strEncontrado, strEsperado, msg + " no es correcto.");
-        SOFTASSERT.get().assertEquals(douEncontrado, douEsperado, msg + " no es correcto.");
-        SOFTASSERT.get().assertEquals(boolEncontrado, boolEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(strEncontrado, strEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(douEncontrado, douEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(boolEncontrado, boolEsperado, msg + " no es correcto.");
 
         addMsgToReport(msg);
 
@@ -158,17 +149,17 @@ public class BaseValidator {
     }
 
     public void addMsgToReport(String msg) {
-        if (SOFTASSERT.get().m_errors_aux.isEmpty()) {
+        if (softAssert.m_errors_aux.isEmpty()) {
             CucumberReporter.addTestStepLog(msg + " es correcto.");
         } else {
             CucumberReporter.addTestStepLog("---ERROR: " + msg + " NO es correcto.");
-            SOFTASSERT.get().clearAuxErrors();
+            softAssert.clearAuxErrors();
         }
     }
 
     public void checkContains(String msg){
         msg = Utilities.formatDescription(msg);
-        SOFTASSERT.get().assertTrue(strEsperado.contains(strEncontrado), msg);
+        softAssert.assertTrue(strEsperado.contains(strEncontrado), msg);
 
         clearAuxVar();
     }

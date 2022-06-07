@@ -8,7 +8,7 @@ public class CharacterValidator extends BaseValidator {
     CommonValidator commonValidator = new CommonValidator();
 
     public void validate(String id) {
-        setSoftAssert(new SoftAssert());
+        softAssert = new SoftAssert();
 
         CharacterResponse response = (CharacterResponse) APIManager.getLastResponse().getResponse();
 
@@ -18,10 +18,10 @@ public class CharacterValidator extends BaseValidator {
 
         CucumberReporter.addTestStepLog("**************************** FIN VALIDACIONES ****************************");
 
-        if (!getSoftAssert().m_errors.isEmpty()) {
-            getSoftAssert().assertAll();
+        if (!softAssert.m_errors.isEmpty()) {
+            softAssert.assertAll();
         }
-        getSoftAssert().isAssert();
+        softAssert.isAssert();
     }
 
     private void validateResponse(CharacterResponse response, String id) {
@@ -31,6 +31,6 @@ public class CharacterValidator extends BaseValidator {
         strEncontrado = String.valueOf(response.getId());
         checkAndReport("El id " + id + " del character");
 
-        getSoftAssert().assertTrue(commonValidator.fechaFormatoYMDTHMS(response.getCreated()));
+        softAssert.assertTrue(commonValidator.fechaFormatoYMDTHMS(response.getCreated()));
     }
 }

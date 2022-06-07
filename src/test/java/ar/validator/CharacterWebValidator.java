@@ -12,7 +12,7 @@ public class CharacterWebValidator extends BaseValidator {
     private CharacterResponse characterResponse;
 
     public void validate(String nombre, String id) {
-        setSoftAssert(new SoftAssert());
+        softAssert = new SoftAssert();
 
         CallService(id);
 
@@ -22,10 +22,10 @@ public class CharacterWebValidator extends BaseValidator {
 
         CucumberReporter.addTestStepLog("**************************** FIN VALIDACIONES ****************************");
 
-        if (!getSoftAssert().m_errors.isEmpty()) {
-            getSoftAssert().assertAll();
+        if (!softAssert.m_errors.isEmpty()) {
+            softAssert.assertAll();
         }
-        getSoftAssert().isAssert();
+        softAssert.isAssert();
         DriverManager.getDriverInstance().close();
     }
 
@@ -38,13 +38,13 @@ public class CharacterWebValidator extends BaseValidator {
     private void validateResponse(CharacterResponse response, String nombre) {
         WebActionManager.waitPresence(CharacterConstants.EPISODIOS);
         WebActionManager.waitVisibility(CharacterConstants.EPISODIOS);
-        getSoftAssert().assertTrue(isVisible(CharacterConstants.EPISODIOS));
+        softAssert.assertTrue(isVisible(CharacterConstants.EPISODIOS));
 
         strEsperado = response.getName();
         strEncontrado = WebActionManager.getText(CharacterConstants.NOMBRE_PERSONAJE);
         check("El nombre del character");
 
-        getSoftAssert().assertEquals(nombre, response.getName(), "El nombre del personaje no es correcto");
+        softAssert.assertEquals(nombre, response.getName(), "El nombre del personaje no es correcto");
 
         strEsperado = "Episodios: " + response.getEpisode().size();
         strEncontrado = WebActionManager.getText(CharacterConstants.EPISODIOS);
