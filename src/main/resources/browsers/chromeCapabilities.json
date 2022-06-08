@@ -9,7 +9,8 @@
 		"--test-type",
 		"--ignore-certificate-errors",
 		"--start-maximized",
-		"--window-size=1280,1024"
+		"--window-size=1280,1024",
+		"--headless"
 	],
 		"extensions": [],
 		"prefs": {"printing.enabled": false}
