@@ -20,7 +20,7 @@
 
 	<properties>
 		<maven.build.timestamp.format>yyyyMMdd_HHmmss</maven.build.timestamp.format>
-		<runner>testngSecuencial.xml</runner>
+		<runner>testngParallel.xml</runner>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		
 		<!-- defult configuration chrome local -->

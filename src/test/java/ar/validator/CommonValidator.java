@@ -1,11 +1,14 @@
 package ar.validator;
 
+import com.example.model.apiModel.error.GenericErrorResponse;
 import org.apache.commons.validator.routines.UrlValidator;
 import com.crowdar.core.actions.WebActionManager;
+import com.crowdar.api.rest.APIManager;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.io.IOException;
+import org.testng.Assert;
 import java.util.List;
 import java.net.URL;
 
@@ -18,7 +21,7 @@ public class CommonValidator extends BaseValidator {
      * @param fecha debe tener el formato yyyy-MM-dd
      * @return boolean
      */
-    public static boolean fechaFormatoYMD(String fecha) {
+    public boolean fechaFormatoYMD(String fecha) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             formatter.parse(fecha);
@@ -36,7 +39,7 @@ public class CommonValidator extends BaseValidator {
      * @param fecha debe tener el formato yyyy-MM-ddThh:mm:ss
      * @return boolean
      */
-    public static boolean fechaFormatoYMDTHMS(String fecha) {
+    public boolean fechaFormatoYMDTHMS(String fecha) {
         if (fecha != null) {
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
@@ -57,7 +60,7 @@ public class CommonValidator extends BaseValidator {
      * @param fecha debe tener el formato yyyy-MM-dd hh:mm:ss
      * @return boolean
      */
-    public static boolean fechaFormatoYMDHMS(String fecha) {
+    public boolean fechaFormatoYMDHMS(String fecha) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             formatter.parse(fecha);
@@ -74,7 +77,7 @@ public class CommonValidator extends BaseValidator {
      * @param fecha debe tener el formato dd/MM/yyyy
      * @return boolean
      */
-    public static boolean fechaFormatoDMY(String fecha) {
+    public boolean fechaFormatoDMY(String fecha) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             formatter.parse(fecha);
@@ -91,7 +94,7 @@ public class CommonValidator extends BaseValidator {
      * @param strNum de tipo String
      * @return boolean
      */
-    public static boolean isNumeric(String strNum) {
+    public boolean isNumeric(String strNum) {
         if (strNum == null) {
             return false;
         }
@@ -103,8 +106,14 @@ public class CommonValidator extends BaseValidator {
         return true;
     }
 
-    public static Boolean validateOrdenAlfabetico(List<String> nombres) {
-        //valido el orden alfabetico de una lista de nombres
+    /**
+     * Valida el orden alfabetico de una lista de nombres
+     * Nota: Este metodo no tiene en cuenta el primer nombre de la lista
+     *
+     * @param nombres de tipo List<String>
+     * @return boolean
+     */
+    public Boolean validateOrdenAlfabetico(List<String> nombres) {
         int aux;
         boolean flag = true;
         nombres.remove(0);
@@ -122,13 +131,13 @@ public class CommonValidator extends BaseValidator {
         return flag;
     }
 
-    public static boolean validateURL(String url) {
+    public boolean validateURL(String url) {
         String[] schemes = {"http", "https"}; //DEFAULT schemes = "http", "https", "ftp"
         UrlValidator urlValidator = new UrlValidator(schemes);
         return urlValidator.isValid(url);
     }
 
-    public static boolean doesURLExist(URL url) throws IOException {
+    public boolean doesURLExist(URL url) throws IOException {
         // We want to check the current URL
         HttpURLConnection.setFollowRedirects(false);
 
@@ -144,7 +153,7 @@ public class CommonValidator extends BaseValidator {
         return responseCode == HttpURLConnection.HTTP_OK;
     }
 
-    public static void validateBoton(String boton, boolean isEnabled, String name) {
+    public void validateBoton(String boton, boolean isEnabled, String name) {
         softAssert.assertTrue(WebActionManager.isPresent(boton), "El boton " + name + " no está presente.");
         softAssert.assertTrue(WebActionManager.isVisible(boton), "El boton " + name + " no es visible.");
         if (isEnabled) {
@@ -157,7 +166,7 @@ public class CommonValidator extends BaseValidator {
         check("El nombre del boton");
     }
 
-    public static void validateData(String locator, String type) {
+    public void validateData(String locator, String type) {
         WebActionManager.waitPresence(locator);
         softAssert.assertTrue(WebActionManager.isPresent(locator), "El locator " + locator + " no esta presente.");
         softAssert.assertTrue(WebActionManager.isVisible(locator), "El locator " + locator + " no es visible.");
@@ -167,16 +176,21 @@ public class CommonValidator extends BaseValidator {
 
         switch (type) {
             case "string":
-                softAssert.assertFalse(CommonValidator.isNumeric(text), "El locator " + locator + " no es tipo String.");
+                softAssert.assertFalse(isNumeric(text), "El locator " + locator + " no es tipo String.");
                 break;
             case "numeric":
-                softAssert.assertTrue(CommonValidator.isNumeric(text), "El locator " + locator + " no es tipo numerico.");
+                softAssert.assertTrue(isNumeric(text), "El locator " + locator + " no es tipo numerico.");
                 break;
             case "date":
-                softAssert.assertTrue(CommonValidator.fechaFormatoDMY(text), "El locator " + locator + " no es de tipo date.");
+                softAssert.assertTrue(fechaFormatoDMY(text), "El locator " + locator + " no es de tipo date.");
                 break;
             default:
                 softAssert.fail("Tipo no soportado");
         }
+    }
+
+    public void validateErrorMessage(String message) {
+        GenericErrorResponse errorResponse = (GenericErrorResponse) APIManager.getLastResponse().getResponse();
+        Assert.assertEquals(errorResponse.getError(), message);
     }
 }
