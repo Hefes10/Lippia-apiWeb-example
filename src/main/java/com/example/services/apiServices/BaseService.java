@@ -10,7 +10,6 @@ import com.crowdar.api.rest.APIManager;
 import com.crowdar.api.rest.Response;
 import com.crowdar.api.rest.Request;
 import com.crowdar.core.JsonUtils;
-import java.util.HashMap;
 import java.util.Map;
 
 public class BaseService extends CustomMethodService {

@@ -1,10 +1,9 @@
 package ar.steps.webSteps;
 
-import ar.validator.BaseValidator;
 import com.crowdar.core.actions.WebActionManager;
-import com.example.constants.CharacterConstants;
 import com.example.constants.HomeConstants;
 import ar.validator.CharacterWebValidator;
+import ar.validator.BaseValidator;
 import com.crowdar.core.PageSteps;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
