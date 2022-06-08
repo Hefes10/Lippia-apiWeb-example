@@ -11,7 +11,7 @@ public class BaseValidator {
     public double douEsperado, douEncontrado;
     public boolean boolEsperado, boolEncontrado;
 
-    protected static SoftAssert softAssert = new SoftAssert();
+    protected SoftAssert softAssert = new SoftAssert();
 
     public void analyzeNotNull(Object obj) {
         ReflectionUtils.doWithFields(obj.getClass(), field -> {

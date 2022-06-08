@@ -5,16 +5,16 @@ import com.example.report.CucumberReporter;
 import com.crowdar.api.rest.APIManager;
 
 public class CharacterValidator extends BaseValidator {
-    CommonValidator commonValidator = new CommonValidator();
+    private final CommonValidator commonValidator = new CommonValidator();
+    private CharacterResponse characterResponse;
 
     public void validate(String id) {
-        softAssert = new SoftAssert();
 
-        CharacterResponse response = (CharacterResponse) APIManager.getLastResponse().getResponse();
+        CallService();
 
         CucumberReporter.addTestStepLog("****************************** VALIDACIONES ******************************");
 
-        validateResponse(response, id);
+        validateResponse(characterResponse, id);
 
         CucumberReporter.addTestStepLog("**************************** FIN VALIDACIONES ****************************");
 
@@ -22,6 +22,10 @@ public class CharacterValidator extends BaseValidator {
             softAssert.assertAll();
         }
         softAssert.isAssert();
+    }
+
+    private void CallService() {
+        characterResponse = (CharacterResponse) APIManager.getLastResponse().getResponse();
     }
 
     private void validateResponse(CharacterResponse response, String id) {
