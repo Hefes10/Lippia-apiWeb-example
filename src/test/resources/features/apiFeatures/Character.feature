@@ -4,9 +4,6 @@ Feature: BFF - Character por ID
   QUIERO consultar un character por id
   PARA conocer todos los datos en relacion al character consultado
 
-  Background:
-    Given deshabilito la opcion de screenshot
-
   Scenario Outline: Consulta de character por ID - Resultado exitoso
     Given el id '<id>' de un character
     When realizo una peticion 'GET' al endpoint de la entidad 'CHARACTER' con el jsonName 'character/rq_consultaPorId'
