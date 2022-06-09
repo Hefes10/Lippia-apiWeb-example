@@ -3,6 +3,7 @@ package ar.validator;
 import com.crowdar.core.actions.WebActionManager;
 import org.springframework.util.ReflectionUtils;
 import com.example.report.CucumberReporter;
+import org.testng.Assert;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,137 +14,97 @@ public class BaseValidator {
 
     protected SoftAssert softAssert = new SoftAssert();
 
-    public void analyzeNotNull(Object obj) {
+    public void analyze(Object obj, String condition, Boolean message) {
+        doWithFields(obj, condition);
+        if (message) addMsg(obj);
+    }
+
+    public void analyze(Object obj, String condition, Boolean message, String[] except) {
+        doWithFields(obj, condition);
+        if (message) addMsg(obj);
+    }
+
+    public void analyze(Object obj, String condition, Boolean message, List<String> except) {
+        doWithFields(obj, condition);
+        if (message) addMsg(obj);
+    }
+
+    private void doWithFields(Object obj, String condition) {
+        condition = condition.toUpperCase().replaceAll("\\s+","");
+        String finalCondition = condition;
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
-            softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+            switch (finalCondition) {
+                case "NOTNULL":
+                    softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                    break;
+                case "NOTVOID":
+                    softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                    break;
+                case "NOTNULL,NOTVOID":
+                case "NOTVOID,NOTNULL":
+                    softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                    softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                    break;
+                default:
+                    Assert.fail("Not found condition in BaseValidator.doWithFields()");
+            }
         });
+    }
 
+    private void doWithFields(Object obj, String condition, List<String> except) {
+        condition = condition.toUpperCase();
+        String finalCondition = condition;
+        ReflectionUtils.doWithFields(obj.getClass(), field -> {
+            field.setAccessible(true);
+            if (!except.contains(field.getName())) {
+                switch (finalCondition) {
+                    case "NOT NULL":
+                        softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                        break;
+                    case "NOT VOID":
+                        softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                        break;
+                    default:
+                        Assert.fail("Not found condition in BaseValidator.doWithFields()");
+                }
+            }
+        });
+    }
+
+    private void doWithFields(Object obj, String condition, String[] except) {
+        condition = condition.toUpperCase();
+        String finalCondition = condition;
+        ReflectionUtils.doWithFields(obj.getClass(), field -> {
+            field.setAccessible(true);
+            if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
+                switch (finalCondition) {
+                    case "NOT NULL":
+                        softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                        break;
+                    case "NOT VOID":
+                        softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                        break;
+                    default:
+                        Assert.fail("Not found condition in BaseValidator.doWithFields()");
+                }
+            }
+        });
+    }
+
+    private void addMsg(Object obj) {
         String var = obj.getClass().getTypeName().replace(".", "/");
         var = var.substring(var.lastIndexOf("/") + 1);
         addMsgToReport("Se valida que los campos de " + var + " sean distintos de null, y ");
     }
 
-    public void analyzeNotNullWhitoutMsg(Object obj) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-        });
-    }
-
-    public void analyzeNotNull(Object obj, List<String> except) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            if (!except.contains(field.getName())) {
-                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-            }
-        });
-
-        String var = obj.getClass().getTypeName().replace(".", "/");
-        var = var.substring(var.lastIndexOf("/") + 1);
-        addMsgToReport("Se valida que los campos de " + var + " sean distintos de null, y ");
-    }
-
-    public void analyzeNotNullWhitoutMsg(Object obj, List<String> except) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            if (!except.contains(field.getName())) {
-                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-            }
-        });
-    }
-
-    public void analyzeNotNull(Object obj, String[] except) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-            }
-        });
-
-        String var = obj.getClass().getTypeName().replace(".", "/");
-        var = var.substring(var.lastIndexOf("/") + 1);
-        addMsgToReport("Se valida que los campos de " + var + " sean distintos de null, y ");
-    }
-
-    public void analyzeNotNullWhitoutMsg(Object obj, String[] except) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-            }
-        });
-    }
-
-    public void analyzeNotVoid(Object obj) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-        });
-
-        String var = obj.getClass().getTypeName().replace(".", "/");
-        var = var.substring(var.lastIndexOf("/") + 1);
-        addMsgToReport("Se valida que los campos de " + var + " sean distintos de vacio, y ");
-    }
-
-    public void analyzeNotVoidWhitoutMsg(Object obj) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-        });
-    }
-
-    public void analyzeNotVoid(Object obj, List<String> except) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            if (!except.contains(field.getName())) {
-                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-            }
-        });
-
-        String var = obj.getClass().getTypeName().replace(".", "/");
-        var = var.substring(var.lastIndexOf("/") + 1);
-        addMsgToReport("Se valida que los campos de " + var + " sean distintos de vacio, y ");
-    }
-
-    public void analyzeNotVoid(Object obj, String[] except) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-            }
-        });
-
-        String var = obj.getClass().getTypeName().replace(".", "/");
-        var = var.substring(var.lastIndexOf("/") + 1);
-        addMsgToReport("Se valida que los campos de " + var + " sean distintos de vacio, y ");
-    }
-
-    public void analyzeNotVoidWhitoutMsg(Object obj, String[] except) {
-        ReflectionUtils.doWithFields(obj.getClass(), field -> {
-            field.setAccessible(true);
-            if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-            }
-        });
-    }
-
-    public void check(String msg){
+    public void check(String msg, Boolean message) {
         msg = Utilities.formatDescription(msg);
         softAssert.assertEquals(strEncontrado, strEsperado, msg + " no es correcto.");
         softAssert.assertEquals(douEncontrado, douEsperado, msg + " no es correcto.");
         softAssert.assertEquals(boolEncontrado, boolEsperado, msg + " no es correcto.");
 
-        clearAuxVar();
-    }
-
-    public void checkAndReport(String msg){
-        msg = Utilities.formatDescription(msg);
-        softAssert.assertEquals(strEncontrado, strEsperado, msg + " no es correcto.");
-        softAssert.assertEquals(douEncontrado, douEsperado, msg + " no es correcto.");
-        softAssert.assertEquals(boolEncontrado, boolEsperado, msg + " no es correcto.");
-
-        addMsgToReport(msg);
+        if (message) addMsgToReport(msg);
 
         clearAuxVar();
     }
@@ -157,7 +118,7 @@ public class BaseValidator {
         }
     }
 
-    public void checkContains(String msg){
+    public void checkContains(String msg) {
         msg = Utilities.formatDescription(msg);
         softAssert.assertTrue(strEsperado.contains(strEncontrado), msg);
 
@@ -176,7 +137,7 @@ public class BaseValidator {
     public boolean isVisible(String locatorElement) {
         boolean result = false;
         int attempts = 0;
-        while(attempts < 2) {
+        while (attempts < 2) {
             try {
                 WebActionManager.isVisible(locatorElement);
                 result = true;
