@@ -15,74 +15,24 @@ import java.net.URL;
 public class CommonValidator extends BaseValidator {
 
     /**
-     * Valida que la fecha tenga un formato de tipo yyyy-MM-dd
-     * Ej: "2020-03-16"
+     * Valida que una fecha tenga el formato pasado por parametro
+     * Ejemplos de formato:
+     * dd/MM/yyyy
+     * yyyy-MM-dd
+     * yyyy-MM-dd hh:mm:ss
+     * yyyy-MM-dd'T'hh:mm:ss
      *
-     * @param fecha debe tener el formato yyyy-MM-dd
+     * @param fecha de tipo String
+     * @param formato debe tener un formato valido
      * @return boolean
      */
-    public boolean fechaFormatoYMD(String fecha) {
+    public boolean validateFormato(String fecha, String formato) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formatter = new SimpleDateFormat(formato);
             formatter.parse(fecha);
             return true;
         } catch (ParseException e) {
             e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * Valida que la fecha tenga un formato de tipo yyyy-MM-ddThh:mm:ss
-     * Ej: "2020-03-16T00:00:00"
-     *
-     * @param fecha debe tener el formato yyyy-MM-ddThh:mm:ss
-     * @return boolean
-     */
-    public boolean fechaFormatoYMDTHMS(String fecha) {
-        if (fecha != null) {
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss");
-                formatter.parse(fecha);
-                return true;
-            } catch (ParseException e) {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Valida que la fecha tenga un formato de tipo yyyy-MM-dd hh:mm:ss
-     * Ej: "2020-03-16 00:00:00"
-     *
-     * @param fecha debe tener el formato yyyy-MM-dd hh:mm:ss
-     * @return boolean
-     */
-    public boolean fechaFormatoYMDHMS(String fecha) {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            formatter.parse(fecha);
-            return true;
-        } catch (ParseException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Valida que la fecha tenga un formato de tipo dd/MM/yyyy
-     * Ej: "20/11/2021"
-     *
-     * @param fecha debe tener el formato dd/MM/yyyy
-     * @return boolean
-     */
-    public boolean fechaFormatoDMY(String fecha) {
-        try {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-            formatter.parse(fecha);
-            return true;
-        } catch (ParseException e) {
             return false;
         }
     }
@@ -182,7 +132,7 @@ public class CommonValidator extends BaseValidator {
                 softAssert.assertTrue(isNumeric(text), "El locator " + locator + " no es tipo numerico.");
                 break;
             case "date":
-                softAssert.assertTrue(fechaFormatoDMY(text), "El locator " + locator + " no es de tipo date.");
+                softAssert.assertTrue(validateFormato(text, "dd/MM/yyyy"), "El locator " + locator + " no es de tipo date.");
                 break;
             default:
                 softAssert.fail("Tipo no soportado");
