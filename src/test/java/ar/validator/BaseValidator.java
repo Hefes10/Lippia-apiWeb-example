@@ -3,6 +3,7 @@ package ar.validator;
 import com.crowdar.core.actions.WebActionManager;
 import org.springframework.util.ReflectionUtils;
 import com.example.report.CucumberReporter;
+import java.lang.reflect.Field;
 import org.testng.Assert;
 import java.util.Arrays;
 import java.util.List;
@@ -20,86 +21,59 @@ public class BaseValidator {
     }
 
     public void analyze(Object obj, String condition, Boolean message, String[] except) {
-        doWithFields(obj, condition);
+        doWithFields(obj, condition, except);
         if (message) addMsg(obj);
     }
 
     public void analyze(Object obj, String condition, Boolean message, List<String> except) {
-        doWithFields(obj, condition);
+        doWithFields(obj, condition, except);
         if (message) addMsg(obj);
     }
 
     private void doWithFields(Object obj, String condition) {
-        condition = condition.toUpperCase().replaceAll("\\s+","");
-        String finalCondition = condition;
+        String finalCondition = condition.toUpperCase().replaceAll("\\s+","");
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
-            switch (finalCondition) {
-                case "NOTNULL":
-                    softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-                    break;
-                case "NOTVOID":
-                    softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-                    break;
-                case "NOTNULL,NOTVOID":
-                case "NOTVOID,NOTNULL":
-                    softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-                    softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-                    break;
-                default:
-                    Assert.fail("Not found condition in BaseValidator.doWithFields()");
-            }
+            switchCondition(field, obj, finalCondition);
         });
     }
 
     private void doWithFields(Object obj, String condition, List<String> except) {
-        condition = condition.toUpperCase();
-        String finalCondition = condition;
+        String finalCondition = condition.toUpperCase().replaceAll("\\s+","");
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (!except.contains(field.getName())) {
-                switch (finalCondition) {
-                    case "NOT NULL":
-                        softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-                        break;
-                    case "NOT VOID":
-                        softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-                        break;
-                    case "NOTNULL,NOTVOID":
-                    case "NOTVOID,NOTNULL":
-                        softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-                        softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-                        break;
-                    default:
-                        Assert.fail("Not found condition in BaseValidator.doWithFields()");
-                }
+                switchCondition(field, obj, finalCondition);
             }
         });
     }
 
     private void doWithFields(Object obj, String condition, String[] except) {
-        condition = condition.toUpperCase();
-        String finalCondition = condition;
+        String finalCondition = condition.toUpperCase().replaceAll("\\s+","");
         ReflectionUtils.doWithFields(obj.getClass(), field -> {
             field.setAccessible(true);
             if (Arrays.stream(except).noneMatch(str -> str.equals(field.getName()))) {
-                switch (finalCondition) {
-                    case "NOT NULL":
-                        softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-                        break;
-                    case "NOT VOID":
-                        softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-                        break;
-                    case "NOTNULL,NOTVOID":
-                    case "NOTVOID,NOTNULL":
-                        softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
-                        softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
-                        break;
-                    default:
-                        Assert.fail("Not found condition in BaseValidator.doWithFields()");
-                }
+                switchCondition(field, obj, finalCondition);
             }
         });
+    }
+
+    private void switchCondition(Field field, Object obj, String finalCondition) throws IllegalAccessException {
+        switch (finalCondition) {
+            case "NOTNULL":
+                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                break;
+            case "NOTVOID":
+                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                break;
+            case "NOTNULL,NOTVOID":
+            case "NOTVOID,NOTNULL":
+                softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
+                softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
+                break;
+            default:
+                Assert.fail("Condition not found in BaseValidator.doWithFields()");
+        }
     }
 
     private void addMsg(Object obj) {

@@ -29,7 +29,8 @@ public class CharacterValidator extends BaseValidator {
     }
 
     private void validateResponse(CharacterResponse response, String id) {
-        analyze(response, "not null, not void", true);
+        String[] except = {"type"};
+        analyze(response, "not null, not void", true, except);
 
         strEsperado =  id;
         strEncontrado = String.valueOf(response.getId());
