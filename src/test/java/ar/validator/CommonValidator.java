@@ -163,7 +163,7 @@ public class CommonValidator extends BaseValidator {
         }
         strEsperado = name;
         strEncontrado = WebActionManager.getText(boton);
-        check("El nombre del boton");
+        check("El nombre del boton", false);
     }
 
     public void validateData(String locator, String type) {
