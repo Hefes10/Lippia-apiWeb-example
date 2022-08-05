@@ -1,6 +1,7 @@
 package ar.validator;
 
 import com.example.model.apiModel.character.CharacterResponse;
+import com.example.services.apiServices.BaseService;
 import com.example.services.apiServices.CharacterService;
 import com.crowdar.core.actions.WebActionManager;
 import com.example.constants.CharacterConstants;
@@ -28,7 +29,7 @@ public class CharacterWebValidator extends BaseValidator {
     }
 
     private void CallService(String id) {
-        CharacterService.ID.set(id);
+        BaseService.PARAMS.get().put("id", id);
         CharacterService.callService("GET", "CHARACTER", "character/rq_consultaPorId");
         characterResponse = (CharacterResponse) APIManager.getLastResponse().getResponse();
     }

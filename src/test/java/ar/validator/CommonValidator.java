@@ -26,7 +26,7 @@ public class CommonValidator extends BaseValidator {
      * @param formato debe tener un formato valido
      * @return boolean
      */
-    public boolean validateFormato(String fecha, String formato) {
+    public boolean validateFormatDate(String fecha, String formato) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat(formato);
             formatter.parse(fecha);
@@ -132,7 +132,7 @@ public class CommonValidator extends BaseValidator {
                 softAssert.assertTrue(isNumeric(text), "El locator " + locator + " no es tipo numerico.");
                 break;
             case "date":
-                softAssert.assertTrue(validateFormato(text, "dd/MM/yyyy"), "El locator " + locator + " no es de tipo date.");
+                softAssert.assertTrue(validateFormatDate(text, "dd/MM/yyyy"), "El locator " + locator + " no es de tipo date.");
                 break;
             default:
                 softAssert.fail("Tipo no soportado");

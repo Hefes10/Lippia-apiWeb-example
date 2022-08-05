@@ -14,11 +14,11 @@ import java.util.Map;
 
 public class BaseService extends CustomMethodService {
 
+    public static final ThreadLocal<Map<String, String>> PARAMS = new ThreadLocal<>();
     public static final ThreadLocal<Boolean> SCREENSHOT_DISABLE = new ThreadLocal<>();
-    public static final ThreadLocal<String> ID = new ThreadLocal<>();
 
-    public static <T> Response get(String jsonRequest, Map<String, String> params, Class<T> classModel) {
-        Request request = getRequest(jsonRequest, setParams(params));
+    public static <T> Response get(String jsonRequest, Class<T> classModel) {
+        Request request = getRequest(jsonRequest, setParams());
         request.getHeaders().put("Accept-Charset", "utf-8");
         showRequest(request);
         Response resp = get(request, classModel, getCustomRestClient());
@@ -27,8 +27,8 @@ public class BaseService extends CustomMethodService {
         return resp;
     }
 
-    public static <T> Response post(String jsonRequest, Map<String, String> params, Class<T> classModel) {
-        Request request = getRequest(jsonRequest, setParams(params));
+    public static <T> Response post(String jsonRequest, Class<T> classModel) {
+        Request request = getRequest(jsonRequest, setParams());
         request.getHeaders().put("Accept-Charset", "utf-8");
         showRequest(request);
         Response resp = post(request, classModel, getCustomRestClient());
@@ -37,9 +37,9 @@ public class BaseService extends CustomMethodService {
         return resp;
     }
 
-    private static Map<String, String> setParams(Map<String, String> params) {
-        params.put("base.url", PropertyManager.getProperty("base.url"));
-        return params;
+    private static Map<String, String> setParams() {
+        PARAMS.get().put("base.url", PropertyManager.getProperty("base.url"));
+        return PARAMS.get();
     }
 
     private static void showRequest(Request request) {

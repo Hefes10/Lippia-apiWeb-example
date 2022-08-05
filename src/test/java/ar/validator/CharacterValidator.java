@@ -36,6 +36,6 @@ public class CharacterValidator extends BaseValidator {
         strEncontrado = String.valueOf(response.getId());
         check("El id " + id + " del character", true);
 
-        softAssert.assertTrue(commonValidator.fechaFormatoYMDTHMS(response.getCreated()));
+        softAssert.assertTrue(commonValidator.validateFormatDate(response.getCreated(), "yyyy-MM-dd'T'hh:mm:ss"));
     }
 }

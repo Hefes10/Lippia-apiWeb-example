@@ -6,8 +6,10 @@ import java.util.ArrayList;
 import org.testng.Assert;
 import java.util.List;
 
-public class validateOrdenAlfabeticoTest {
+public class CommonValidatorTest {
     CommonValidator commonValidator = new CommonValidator();
+
+    //validateOrdenAlfabetico()
 
     @Test
     public void test1() {
