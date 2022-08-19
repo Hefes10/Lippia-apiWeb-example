@@ -45,22 +45,10 @@ public class SoftAssert extends Assertion {
                 var1.append(((AssertionError) ((Map.Entry<?, ?>) assertionErrorIAssertEntry).getKey()).getMessage());
                 CucumberReporter.addTestStepLog(((AssertionError) ((Map.Entry<?, ?>) assertionErrorIAssertEntry).getKey()).getMessage());
             }
-            flag = true;
-            clearErrors();
-        }
-    }
-
-    private void clearErrors() {
-        this.m_errors.clear();
-    }
-
-    public void clearAuxErrors() {
-        this.m_errors_aux.clear();
-    }
-
-    public void isAssert() {
-        if (this.flag){
             throw new AssertionError(var1.toString());
         }
+    }
+    public void clearAuxErrors() {
+        this.m_errors_aux.clear();
     }
 }

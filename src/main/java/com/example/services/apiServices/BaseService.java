@@ -81,13 +81,18 @@ public class BaseService extends CustomMethodService {
         SCREENSHOT_DISABLE.set(screenshotDisable);
     }
 
-    public static void callService(String methodName, String entity, String jsonName) {
+    public static Response callService(String method, String entity, String jsonName) {
+        doRequest(method, entity, jsonName);
+        return APIManager.getLastResponse();
+    }
+
+    public static void doRequest(String methodName, String entity, String jsonName) {
+        Class<?> entityService = EntityConfiguration.valueOf(entity).getEntityService();
+        String jsonPath = "request/".concat(jsonName);
         try {
-            Class<?> entityService = EntityConfiguration.valueOf(entity).getEntityService();
-            String jsonPath = "request/".concat(jsonName);
             entityService.getMethod(methodName.toLowerCase(), String.class).invoke("", jsonPath);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
         }
     }
 }

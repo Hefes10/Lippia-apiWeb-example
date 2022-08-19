@@ -9,26 +9,23 @@ public class CharacterValidator extends BaseValidator {
     private CharacterResponse characterResponse;
 
     public void validate(String id) {
-
-        CallService();
+        setResponses();
 
         CucumberReporter.addTestStepLog("****************************** VALIDACIONES ******************************");
 
-        validateResponse(characterResponse, id);
+        validateResponse(id);
 
         CucumberReporter.addTestStepLog("**************************** FIN VALIDACIONES ****************************");
 
-        if (!softAssert.m_errors.isEmpty()) {
-            softAssert.assertAll();
-        }
-        softAssert.isAssert();
+        softAssert.assertAll();
     }
 
-    private void CallService() {
+    private void setResponses() {
         characterResponse = (CharacterResponse) APIManager.getLastResponse().getResponse();
     }
 
-    private void validateResponse(CharacterResponse response, String id) {
+    private void validateResponse(String id) {
+        CharacterResponse response = characterResponse;
         String[] except = {"type"};
         analyze(response, "not null, not void", true, except);
 

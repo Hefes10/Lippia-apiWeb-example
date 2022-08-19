@@ -128,13 +128,17 @@ public class BaseValidator {
     private void switchCondition(Field field, Object obj, String finalCondition) throws IllegalAccessException {
         switch (finalCondition) {
             case "NOTNULL":
+            case "NN":
                 softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
                 break;
             case "NOTVOID":
+            case "NV":
                 softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
                 break;
             case "NOTNULL,NOTVOID":
             case "NOTVOID,NOTNULL":
+            case "NN,NV":
+            case "NV,NN":
                 softAssert.assertNotNull(field.get(obj), "El campo " + field.getName() + " es null.");
                 softAssert.assertNotEquals("", field.get(obj), "El campo " + field.getName() + " esta vacio.");
                 break;
@@ -155,6 +159,23 @@ public class BaseValidator {
         String var = obj.getClass().getTypeName().replace(".", "/");
         var = var.substring(var.lastIndexOf("/") + 1);
         addMsgToReport("Se valida que los campos de " + var + " sean distintos de null, y ");
+    }
+
+    /**
+     * It compares the values of the variables that were set in the previous step, and if they are different, it adds a
+     * message to the report
+     * Compara los valores de las variables que se establecieron en el paso anterior, y si son diferentes,
+     * añade un mensaje en el reporte
+     *
+     * @param msg The message to be displayed in the report.
+     */
+    public void check(String msg) {
+        msg = Utilities.formatDescription(msg);
+        softAssert.assertEquals(strEncontrado, strEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(douEncontrado, douEsperado, msg + " no es correcto.");
+        softAssert.assertEquals(boolEncontrado, boolEsperado, msg + " no es correcto.");
+
+        clearAuxVar();
     }
 
     /**
